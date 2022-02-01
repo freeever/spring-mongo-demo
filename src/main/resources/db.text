@@ -1,0 +1,40 @@
+db.student.insertMany([
+  { "_id": ObjectId("61f82f6cdda35d0922e3aa44"), "name": "Michael" },
+  { "_id": ObjectId("61f82f6cdda35d0922e3aa45"), "name": "Maria" },
+  { "_id": ObjectId("61f82f6cdda35d0922e3aa46"), "name": "Stephen" },
+  { "_id": ObjectId("61f82f6cdda35d0922e3aa47"), "name": "Steven" },
+  { "_id": ObjectId("61f82f6cdda35d0922e3aa48"), "name": "Jack" },
+  { "_id": ObjectId("61f82f6cdda35d0922e3aa49"), "name": "Franklin" },
+  { "_id": ObjectId("61f82f6cdda35d0922e3aa4a"), "name": "Mike" }
+])
+
+db.course.insertMany ([
+  {
+    "_id": "61f83051dda35d0922e3aa4b",
+    "name": "Java",
+    "studentIds": [
+      "61f82f6cdda35d0922e3aa44",
+      "61f82f6cdda35d0922e3aa45",
+      "61f82f6cdda35d0922e3aa46",
+      "61f82f6cdda35d0922e3aa47"
+    ]
+  },
+  {
+    "_id": "61f83051dda35d0922e3aa4c",
+    "name": "Computer Science",
+    "studentIds": [
+      "61f82f6cdda35d0922e3aa48",
+      "61f82f6cdda35d0922e3aa49",
+      "61f82f6cdda35d0922e3aa45"
+    ]
+  },
+  {
+    "_id": "61f83051dda35d0922e3aa4d",
+    "name": "Oracle",
+    "studentIds": [
+      "61f82f6cdda35d0922e3aa4a",
+      "61f82f6cdda35d0922e3aa44",
+      "61f82f6cdda35d0922e3aa46"
+    ]
+  }
+])
