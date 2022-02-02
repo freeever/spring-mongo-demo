@@ -1,0 +1,93 @@
+{
+	"info": {
+		"_postman_id": "fd7b53ce-cb19-410f-8e6b-b5092396bf4e",
+		"name": "Spring Mongo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Spring Mongo Demo",
+			"item": [
+				{
+					"name": "Find by lookup",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8181/aggregation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8181",
+							"path": [
+								"aggregation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Version By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8181/versions/61f993f0dda35d0922e3aa4e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8181",
+							"path": [
+								"versions",
+								"61f993f0dda35d0922e3aa4e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find All Versions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/versions/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"versions",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find by Aggregation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8181/versions/aggregation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8181",
+							"path": [
+								"versions",
+								"aggregation"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
