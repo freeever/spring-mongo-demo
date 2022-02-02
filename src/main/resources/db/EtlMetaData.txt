@@ -1,0 +1,9 @@
+db.EtlMetaData.insertMany([
+  {
+    "_id": ObjectId("61facb7edda35d0922e3aa55"),
+    "namespace": "default",
+    "feed": "USInvestment",
+    "rulegroups": [],
+    "id": "d8120ee5-e793-4fe2-985e-c5c46c7be052"
+  }
+])

@@ -17,3 +17,6 @@ logging:
             core:
               MongoTemplate: DEBUG
 
+springdoc:
+  api-docs:
+    path: /swagger-ui.html

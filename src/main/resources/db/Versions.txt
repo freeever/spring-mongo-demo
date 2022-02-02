@@ -1,0 +1,80 @@
+db.Versions.insertMany(
+[
+  {
+    "_id": ObjectId("61f993f0dda35d0922e3aa4f"),
+    "VersionId": "2",
+    "IsOverride": true,
+    "Category": "Config",
+    "Comments": "Removed AJ from admin",
+    "CreatedBy": "ahmas82",
+    "CreatedOn": ISODate("2020-04-27T20:02:04.014Z"),
+    "ChangedOn": ISODate("2020-04-27T20:02:54.609Z"),
+    "ApprovedBy": "ahmas82",
+    "Number": 1,
+    "Status": "Approved",
+    "ReleaseVersion": "Prod_4.30",
+    "Deleted": {
+      "Ids": [ObjectId("61f994f6dda35d0922e3aa4f"), ObjectId("61f99501dda35d0922e3aa50"), ObjectId("61f99509dda35d0922e3aa51")],
+      "Delta": [ObjectId("61f99512dda35d0922e3aa52"), ObjectId("61f9952ddda35d0922e3aa53")]
+    },
+    "Modified": [
+      {
+        "Info": [
+          {
+            "_id": "1f9db13c-7f25-49ca-bd67-2de62e8f2246",
+            "Index": 0,
+            "Path": "",
+            "OldValue": "[\"Et1MetaData\", \"FeedMetadata\", \"ReferenceData\"]",
+            "NewValue": "[\"Et1MetaData\", \"FeedMetadata\", \"ReferenceData\"]",
+            "Key": "categories",
+            "Parents": []
+          }
+        ],
+        "_id": "98cbefb7-2e35-43e6-a8ec-f8245132d2af"
+      }
+    ],
+    "IsUpload": false,
+    "FileName0": "DocStore_Test.txt",
+    "Added": {
+      "NewObjects": [
+        {
+          "Active": false,
+          "AdjustedFloorType": "None",
+          "AssetSortDirection": "ASC",
+          "AssetSortField": "ResetDate",
+          "BucketDesc": "USD 3M Libor Loans - A Explicit",
+          "BucketId": "14A",
+          "BucketName": "USD3MLIBORLNS-EXP-A",
+          "HypoSecurityId": "FLT_SQAP_ID",
+          "IFRS": true,
+          "IndexType": "LIBOR3MO",
+          "ResetFrequency": 4,
+          "SimulationModel": "OFF",
+          "StochasticModel": "Test",
+          "USGAAP": true,
+          "U+0024type": "TBSM.Canoe.Core.Common.DataContract.DynamicCFBucketReference"
+        }
+      ],
+      "NewTokens": [
+        {
+          "Info": [
+            {
+              "_id": "e9a77827-a45a-4f59-89fd-5f5df8fb5104",
+              "Index": 0,
+              "Path": "rulegroups[0].rules",
+              "OldValue": "f633ef74-17ad-4ee5-a3c6-71c12e97dd39",
+              "NewValue": "fbda1422-0580-4ae2-8cc6-7019a19640df",
+              "Key": "id",
+              "Parents": [
+                "be8adb0b-15d7-4552-a398-1cf0af9d07bf",
+                "4c107c61-909b-4029-b2ad-d48c7b2c0a60"
+              ]
+            }
+          ],
+          "_id": "98cbefb7-2e35-43e6-a8ec-f8245132d2af"
+        }
+      ]
+    }
+  }
+])
+

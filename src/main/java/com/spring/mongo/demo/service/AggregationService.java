@@ -20,14 +20,13 @@ import java.util.List;
 @Service
 public class AggregationService {
 
-    @Autowired
     private final MongoTemplate mongoTemplate;
 
     public List<Course> findCoursesWithStudents() {
 
         AggregationOperation unwind = Aggregation.unwind("studentIds");
 
-        String query = "{$lookup: {from: 'student', let: { stuId: { $toObjectId: '$studentIds' } },"
+        String query = "{$lookup: {from: 'studen t', let: { stuId: { $toObjectId: '$studentIds' } },"
                 + "pipeline: [{$match: {$expr: { $eq: [ '$_id', '$$stuId' ] },},}, "
                 + "{$project: {isSendTemplate: 1, openId: 1, name: '$name',stu_id: '$_id',},},], "
                 + "as: 'students',}, }";

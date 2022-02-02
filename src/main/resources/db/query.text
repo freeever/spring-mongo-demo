@@ -1,0 +1,45 @@
+
+db.getCollection('Versions').aggregate(
+  [
+    { $match: { Category: 'Config' } },
+    { $unwind: { path: '$Modified', preserveNullAndEmptyArrays: true } },
+    { $unwind: { path: '$Added.NewTokens', preserveNullAndEmptyArrays: true } },
+    { $unwind: { path: '$Added.NewObjects', preserveNullAndEmptyArrays: true } },
+    { $lookup: { from: 'EtlMetaData', pipeline: [ { $match: { feed: 'USInvestment' } } ], as: 'feed' } },
+    {
+      $addFields: {
+        feedId: { $arrayElemAt: [ '$feed.id', 0 ] },
+        deleteId: { $arrayElemAt: [ '$Deleted.Delta._id', 0 ] },
+        modifyId: '$Modified._id',
+        addTokenId: '$Added.NewTokens._id',
+        addObjectId: '$Added.NewObjects.id'
+      }
+    },
+    {
+      $match: {
+        $and: [
+          { 'feedId': { $exists: true, $ne: null } },
+          {
+            $expr: {
+              $or: [
+                { $eq: [ '$deleteId', '$feedId' ] },
+                { $eq: [ '$modifyId', '$feedId' ] },
+                { $eq: [ '$addTokenId', '$feedId' ] },
+                { $eq: [ '$addObjectId', '$feedId' ] }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      $group: {
+        _id: '$_id',
+        version: { '$first': '$$ROOT' }
+      }
+    },
+    {
+      '$replaceRoot': { 'newRoot': { '$mergeObjects': '$version' } }
+    }
+  ]
+)
