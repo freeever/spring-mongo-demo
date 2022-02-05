@@ -2,6 +2,7 @@ package com.spring.mongo.demo.repo;
 
 import com.spring.mongo.demo.dto.docstore.VersionDto;
 import com.spring.mongo.demo.model.docstore.Version;
+import org.bson.Document;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,9 @@ import java.util.List;
 
 @Repository
 public interface VersionRepository extends MongoRepository<Version, String>  {
+
+    @Aggregation(pipeline = { "{ $out: '?0' }" })
+    public List<Document> backup(String collectionName);
 
     @Aggregation(pipeline= {
             "{ $match: { Category: 'Config' } } ",

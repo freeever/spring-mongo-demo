@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.security.auth.callback.Callback;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -35,6 +36,16 @@ public class VersionService {
 
     public Version findById(String id) {
         return versionRepository.findById(id).get();
+    }
+
+    public String backupCollection(String collectionName) {
+        String backupCollectionName = "transformed";
+        versionRepository.backup(backupCollectionName);
+
+//        String query = "[ { $out: 'transformed' } ], cursor: {} ";
+//        Document commandResult = mongoTemplate.executeCommand("{ aggregate: 'Versions', pipeline: " + query + "}");
+
+        return backupCollectionName;
     }
 
     public List<VersionDto> findByAggregation() {
@@ -103,15 +114,3 @@ public class VersionService {
         return versions;
     }
 }
-
-/**
- * MongoDB changed in 3.6 how the aggregation command works. Aggregations require now a cursor.
- * We adapted Spring Data MongoDB 2.1 but not previous versions.
- *
- * Aggregations must be invoked through the collection's aggregate(…) method instead of calling the command directly.
- * This is also the reason why we didn't backport the change. executeCommand(…) is no longer called and we don't want to
- * break compatibility in a bugfix release.
- *
- * The easiest approach for you can be to override the aggregate(…) method and call the appropriate method,
- * DBCollection.aggregate(…) with the mapped aggregation pipeline.
- */
