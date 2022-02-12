@@ -1,5 +1,6 @@
 package com.spring.mongo.demo.rest;
 
+import com.spring.mongo.demo.dto.indexdoc.CompanyDto;
 import com.spring.mongo.demo.dto.indexdoc.CompanyTextSearchRequest;
 import com.spring.mongo.demo.model.indexdoc.Company;
 import com.spring.mongo.demo.service.CompanyService;
@@ -29,5 +30,11 @@ public class CompanyController {
     @ResponseBody
     public List<Company> findByAggregationTextSearch(@RequestBody CompanyTextSearchRequest request) {
         return companyService.findByAggregationTextSearch(request);
+    }
+
+    @PostMapping("/rules")
+    @ResponseBody
+    public List<CompanyDto> findRules(@RequestBody CompanyTextSearchRequest request) {
+        return companyService.findRules(request);
     }
 }

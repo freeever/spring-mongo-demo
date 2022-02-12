@@ -1,5 +1,6 @@
 package com.spring.mongo.demo.service;
 
+import com.spring.mongo.demo.dto.indexdoc.CompanyDto;
 import com.spring.mongo.demo.dto.indexdoc.CompanyTextSearchRequest;
 import com.spring.mongo.demo.model.indexdoc.Company;
 import com.spring.mongo.demo.repo.CompanyRepository;
@@ -47,6 +48,19 @@ public class CompanyService {
             words = "\\\"" + words + "\\\"";
         }
         List<Company> results = companyRepository.findByAggregationTextSearch(request.getWords());
+        return results;
+    }
+
+    public List<CompanyDto> findRules(CompanyTextSearchRequest request) {
+        if (StringUtils.isBlank(request.getWords())) {
+            return new ArrayList<>();
+        }
+
+        String words = StringUtils.normalizeSpace(request.getWords()).trim();
+        if ("All".equalsIgnoreCase(request.getMatchType())) {
+            words = "\\\"" + words + "\\\"";
+        }
+        List<CompanyDto> results = companyRepository.findRules(request.getWords());
         return results;
     }
 }
