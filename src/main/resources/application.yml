@@ -19,4 +19,4 @@ logging:
 
 springdoc:
   api-docs:
-    path: /swagger-ui.html
+    path: /swagger-ui-custom.html
