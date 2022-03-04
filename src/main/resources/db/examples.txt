@@ -1,0 +1,347 @@
+db.company.insertMany([
+    {
+        "name": "IBM",
+        "departments": [
+            {
+                "id": "68ac77e5-b670-43e9-b71f-04c83806ccd8",
+                "name": "IT Infrastructure",
+                "employees": [
+                    {
+                        "name": "Michael Jordan",
+                        "email": "mj@test.com",
+                        "description": "Description for Mr. Michael Jordan"
+                    },
+                    {
+                        "name": "Denzel Washington",
+                        "email": "ms@test.com",
+                        "description": "Description for Mr. Denzel Washington"
+                    },
+                    {
+                        "name": "Stephen Curry",
+                        "email": "sc@test.com",
+                        "description": "Description for Mr. Stephen Curry"
+                    },
+                    {
+                        "name": "Meryl Streep",
+                        "email": "jl@test.com",
+                        "description": "Description for Ms. Meryl Streep"
+                    },
+                    {
+                        "name": "Elizabeth Banks",
+                        "email": "eb@test.com",
+                        "description": "Description for Ms. Elizabeth Banks"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Microft",
+        "departments": [
+            {
+                "id": "3e322736-1bf9-48f8-a896-3093a05b1686",
+                "name": "Production Support",
+                "employees": [
+                    {
+                        "name": "Jack Nicholson",
+                        "email": "jn@test.com",
+                        "description": "Description for Mr. Jack Nicholson"
+                    },
+                    {
+                        "name": "Denzel Washington",
+                        "email": "dw@test.com",
+                        "description": "Description for Mr. Denzel Washington"
+                    },
+                    {
+                        "name": "Tom Hanks",
+                        "email": "th@test.com",
+                        "description": "Description for Mr. Tom Hanks"
+                    },
+                    {
+                        "name": "Meryl Streep",
+                        "email": "ms@test.com",
+                        "description": "Description for Ms. Meryl Streep"
+                    },
+                    {
+                        "name": "Elizabeth Taylor",
+                        "email": "et@test.com",
+                        "description": "Description for Ms. Elizabeth Taylor"
+                    }
+                ]
+            }
+        ]
+    }
+])
+
+
+db.company.createIndex({ "departments.employees.name": "text" })
+
+db.company.createIndex({ "departments.employees.name": "text", "departments.employees.description": "text" })
+
+db.company.find({ $text: { $search: "Michael" } })
+
+db.company.find({ $text: { $search: "Description" } })
+
+db.company.aggregate([{ $match: { $text: { $search: "\"Ms. Elizabeth Taylor\"" } } }])
+
+
+db.company.aggregate({ $out: "com1" })
+db.com1.aggregate({ $out: "com2" })
+
+db.com1.createIndex({ "departments.employees.name": "text", "departments.employees.description": "text" })
+db.com2.createIndex({ "departments.employees.name": "text", "departments.employees.description": "text" })
+
+
+db.company.aggregate([
+    { $match: { $text: { $search: "\"Ms. Elizabeth Taylor\"" } } }
+])
+
+
+db.company.aggregate([{ $match: { $text: { $search: 'Com2' } } },
+    { $unionWith: { coll: 'com1', pipeline: [{ $match: { $text: { $search: 'Com2' } } }] } },
+    { $unionWith: { coll: 'com2', pipeline: [{ $match: { $text: { $search: 'Com2' } } }] } },
+    {
+        $addFields: {
+            company: {
+                feed: '$name',
+                employeeName: '$departments.employees.name',
+                description: '$departments.employees.description'
+            }
+        }
+    },
+    { $sort: { 'name': 1 } }])
+
+
+db.company.aggregate([{ $match: { $text: { $search: 'Michael' } } },
+    { $unionWith: { coll: 'com1', pipeline: [{ $match: { $text: { $search: 'Michael' } } }] } },
+    { $unionWith: { coll: 'com2', pipeline: [{ $match: { $text: { $search: 'Michael' } } }] } },
+    { $sort: { 'name': 1 } }])
+
+db.company.aggregate([{ $match: { $text: { $search: 'Michael' } } },
+    { $unionWith: { coll: 'com1', pipeline: [{ $match: { $text: { $search: 'Michael' } } }] } },
+    { $unionWith: { coll: 'com2', pipeline: [{ $match: { $text: { $search: 'Michael' } } }] } },
+    {
+        $project: {
+            employees: {
+                $filter: {
+                    input: "$departments.employees",
+                    as: "employee",
+                    cond: {
+                        if: {
+                            $regexMatch: {
+                                input: "$$employee.name",
+                                regex: /Michael/,
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    { $sort: { 'name': 1 } }])
+
+
+db.company.aggregate([{ $match: { $text: { $search: 'Michael' } } },
+    { $unionWith: { coll: 'com1', pipeline: [{ $match: { $text: { $search: 'Michael' } } }] } },
+    { $unionWith: { coll: 'com2', pipeline: [{ $match: { $text: { $search: 'Michael' } } }] } },
+    {
+        $project: {
+            departments: {
+                $filter: {
+                    input: "$departments",
+                    as: "department",
+                    cond: {
+                        if: {
+                            $regexMatch: {
+                                input: "$$department.name",
+                                regex: /Infrastructure/,
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    { $sort: { 'name': 1 } }])
+
+db.company.aggregate([{ $match: { $text: { $search: 'Elizabeth' } } },
+    { $unionWith: { coll: 'com1', pipeline: [{ $match: { $text: { $search: 'Elizabeth' } } }] } },
+    { $unionWith: { coll: 'com2', pipeline: [{ $match: { $text: { $search: 'Elizabeth' } } }] } },
+    { $sort: { 'name': 1 } }])
+
+
+db.company.aggregate([
+    { $match: { $text: { $search: 'Michael' } } },
+    { $unionWith: { coll: 'com1', pipeline: [{ $match: { $text: { $search: 'Michael' } } }] } },
+    { $unionWith: { coll: 'com2', pipeline: [{ $match: { $text: { $search: 'Michael' } } }] } },
+    { $addFields: {
+            feed: "$name",
+            ruleGroup: "$departments.name"
+        }},
+    {
+        $project: {
+            _id: 0,
+            feed: 1,
+            ruleGroup: 1,
+            id: 1,
+            emaployees: {
+                $map: {
+                    input: "$departments",
+                    as: "dept",
+                    in: {
+                        employees: {
+                            $filter: {
+                                input: "$$dept.employees",
+                                as: "emp",
+                                cond: {
+                                    $regexMatch: { input: "$$emp.email", regex: /mj@test.com/ }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+])
+
+
+db.company.aggregate([
+    { $match: { $text: { $search: 'Elizabeth' } } },
+    { $unionWith: { coll: 'com1', pipeline: [{ $match: { $text: { $search: 'Elizabeth' } } }] } },
+    { $unionWith: { coll: 'com2', pipeline: [{ $match: { $text: { $search: 'Elizabeth' } } }] } },
+    { $addFields: {
+            feed: "$name",
+        }},
+    {
+        $project: {
+            _id: 0,
+            feed: 1,
+            ruleGroup: 1,
+            ruleGroups: {
+                $map: {
+                    input: "$departments",
+                    as: "dept",
+                    in: {
+                        ruleGroup: "$$dept.name",
+                        employees: {
+                            $filter: {
+                                input: "$$dept.employees",
+                                as: "emp",
+                                cond: {
+                                    $regexMatch: { input: "$$emp.description", regex: /Elizabeth/ }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        $project: {
+            "ruleGroups.employees.email": 0
+        }
+    }
+])
+
+
+db.company.aggregate([
+    { $match: { $text: { $search: 'Elizabeth' } } },
+    { $unionWith: { coll: 'com1', pipeline: [ { $match: { $text: { $search: 'Elizabeth' } } } ] } },
+    { $unionWith: { coll: 'com2', pipeline: [ { $match: { $text: { $search: 'Elizabeth' } } } ] } },
+    { $addFields: { feed: '$name' } },
+    { $project: { _id: 0, feed: 1, ruleGroup: 1,
+            ruleGroups: {
+                $map: {
+                    input: '$departments',
+                    as: 'dept',
+                    in: {
+                        ruleGroup: '$$dept.name',
+                        rules: {
+                            $filter: { input: '$$dept.employees', as: 'emp', cond: { $regexMatch: { input: '$$emp.description', regex: /Elizabeth/ } } }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    { $project: { 'ruleGroups.employees.email': 0 } }
+])
+;
+
+db.company.aggregate([
+    { $match: { $text: { $search: 'Elizabeth' } } },
+//    { $unionWith: { coll: 'com1', pipeline: [ { $match: { $text: { $search: 'Elizabeth' } } } ] } },
+//    { $unionWith: { coll: 'com2', pipeline: [ { $match: { $text: { $search: 'Elizabeth' } } } ] } },
+    { $addFields: { feed: '$name' } },
+    { $project: { _id: 0, feed: 1, ruleGroup: 1,
+            ruleGroups: {
+                $map: {
+                    input: '$departments',
+                    as: 'dept',
+                    in: {
+                        ruleGroup: '$$dept.name',
+                        rules: {
+                            $filter: { input: '$$dept.employees', as: 'emp', cond: { $regexMatch: { input: '$$emp.description', regex: /Elizabeth/ } } }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        $unwind:"$ruleGroups"
+    },
+    {
+        $unwind:"$ruleGroups.rules"
+    },
+    { $addFields:
+        {
+            ruleGroup: "$ruleGroups.ruleGroup",
+            ruleDesc: '$ruleGroups.rules.description'
+        }
+    },
+    { $project: { 'ruleGroups': 0 } }
+])
+
+
+db.EtlMetaData.aggregate([{ $match: { $text: { $search: 'concat' } } },
+                { $project: { _id: 0, feed: 1, ruleGroup: 1,
+                    ruleGroups: {
+                        $map: {
+                            input: '$rulegroups',
+                            as: 'rgp',
+                            in: {
+                                ruleGroup: '$$rgp.rulegroup',
+                                sequence: '$$rgp.sequence',
+                                rules: {
+                                    $filter: { input: '$$rgp.rules', as: 'rule', cond: { $regexMatch: { input: '$$rule.value', regex: /concat/ } } }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    $unwind:"$ruleGroups"
+                },
+                {
+                    $unwind:"$ruleGroups.rules"
+                },
+                { $addFields:
+                    {
+                        ruleGroup: "$ruleGroups.ruleGroup",
+                        rulegroupSequence: "$ruleGroups.sequence",
+                        value: "$ruleGroups.rules.value",
+                        attributeName: "$ruleGroups.rules.attributeName",
+                        ruleSequence: "$ruleGroups.rules.sequence"
+                    }
+                },
+                { $project: { "ruleGroups": 0 } }
+            ])
+
+
+
+
+

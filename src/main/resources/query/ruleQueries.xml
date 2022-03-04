@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queries>
+    <Query id="rule.text.search">
+        <![CDATA[
+            [{ $match: { $text: { $search: '{0}' } } },
+
+                { $project: { _id: 0, feed: 1, ruleGroup: 1,
+                    ruleGroups: {
+                        $map: {
+                            input: '$rulegroups',
+                            as: 'rgp',
+                            in: {
+                                ruleGroup: '$$rgp.rulegroup',
+                                sequence: '$$rgp.sequence',
+                                rules: {
+                                    $filter: { input: '$$rgp.rules', as: 'rule', cond: { $regexMatch: { input: '$$rule.value', regex: /{0}/ } } }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    $unwind:"$ruleGroups"
+                },
+                {
+                    $unwind:"$ruleGroups.rules"
+                },
+                { $addFields:
+                    {
+                        ruleGroup: "$ruleGroups.ruleGroup",
+                        rulegroupSequence: "$ruleGroups.sequence",
+                        value: "$ruleGroups.rules.value",
+                        attributeName: '$ruleGroups.rules.attributeName',
+                        ruleSequence: "$ruleGroups.rules.sequence"
+                    }
+                },
+                { $project: { 'ruleGroups': 0 } }
+            ], cursor: {}
+        ]]>
+    </Query>
+
+    <Query id="rule.text.search222222"><![CDATA[[{ $match: { $text: { $search: '{0}' } } },]]></Query>
+
+</Queries>
