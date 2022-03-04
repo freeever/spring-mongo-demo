@@ -2,7 +2,6 @@ package com.spring.mongo.demo.common.error;
 
 import com.spring.mongo.demo.common.exception.DocStoreDataAccessException;
 import com.spring.mongo.demo.common.exception.DocStoreException;
-import com.spring.mongo.demo.util.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;

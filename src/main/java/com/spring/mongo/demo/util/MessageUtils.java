@@ -8,7 +8,6 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-@Component
 public class MessageUtils {
 
     private static Logger logger = LoggerFactory.getLogger(MessageUtils.class);
@@ -18,17 +17,13 @@ public class MessageUtils {
     private MessageUtils() {
     }
 
-    public String getMessageByKey(String msgKey, Object... params) {
+    public static String getMessageByKey(String msgKey, Object... params) {
         return getMessage(DEFAULT_BUNDLE, msgKey, Locale.ENGLISH, params);
     }
 
-    public String getMessage(String bundleName, String msgKey, Object... params) {
-        return getMessage(bundleName, msgKey, params, Locale.ENGLISH);
-    }
+    public static String getMessage(String bundleName, String msgKey, Object... params) {
 
-    public String getMessage(String bundleName, String msgKey, Locale locale, Object... params) {
-
-        ResourceBundle messages = ResourceBundle.getBundle(bundleName, locale);
+        ResourceBundle messages = ResourceBundle.getBundle(bundleName, Locale.ENGLISH);
 
         if (messages == null) {
             return "???" + bundleName + "??? bundle is not inited";
@@ -54,7 +49,7 @@ public class MessageUtils {
      * @param arguments
      * @return
      */
-    public String format(String pattern, Object ... arguments) {
+    private static String format(String pattern, Object ... arguments) {
 
         if (pattern == null) {
             return null;
