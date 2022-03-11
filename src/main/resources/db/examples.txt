@@ -246,7 +246,7 @@ db.company.aggregate([
 ])
 
 
-db.company.aggregate([
+db.EtlMetaData.aggregate([
     { $match: { $text: { $search: 'Elizabeth' } } },
     { $unionWith: { coll: 'com1', pipeline: [ { $match: { $text: { $search: 'Elizabeth' } } } ] } },
     { $unionWith: { coll: 'com2', pipeline: [ { $match: { $text: { $search: 'Elizabeth' } } } ] } },
@@ -270,76 +270,49 @@ db.company.aggregate([
 ])
 ;
 
-db.company.aggregate([
-    { $match: { $text: { $search: 'Elizabeth' } } },
-//    { $unionWith: { coll: 'com1', pipeline: [ { $match: { $text: { $search: 'Elizabeth' } } } ] } },
-//    { $unionWith: { coll: 'com2', pipeline: [ { $match: { $text: { $search: 'Elizabeth' } } } ] } },
-    { $addFields: { feed: '$name' } },
-    { $project: { _id: 0, feed: 1, ruleGroup: 1,
-            ruleGroups: {
-                $map: {
-                    input: '$departments',
-                    as: 'dept',
-                    in: {
-                        ruleGroup: '$$dept.name',
-                        rules: {
-                            $filter: { input: '$$dept.employees', as: 'emp', cond: { $regexMatch: { input: '$$emp.description', regex: /Elizabeth/ } } }
-                        }
-                    }
-                }
-            }
-        }
-    },
-    {
-        $unwind:"$ruleGroups"
-    },
-    {
-        $unwind:"$ruleGroups.rules"
-    },
-    { $addFields:
-        {
-            ruleGroup: "$ruleGroups.ruleGroup",
-            ruleDesc: '$ruleGroups.rules.description'
-        }
-    },
-    { $project: { 'ruleGroups': 0 } }
-])
+db.EtlMetaData.aggregate([{ $match: { $text: { $search: 'SourceSystemID', $caseSensitive: false } } },
+                                     { $project: { _id: 0, feed: 1, ruleGroup: 1,
+                                         ruleGroups: {
+                                             $map: {
+                                                 input: '$rulegroups',
+                                                 as: 'rgp',
+                                                 in: {
+                                                     ruleGroup: '$$rgp.rulegroup',
+                                                     sequence: '$$rgp.sequence',
+                                                     rules: {
+                                                         $filter: { input: '$$rgp.rules', as: 'rule',
+                                                             cond: {
+                                                                 $or: [
+                                                                     { $regexMatch: { input: '$$rule.value', regex: /SourceSystemID/i } },
+                                                                     { $regexMatch: { input: '$$rule.attributeName', regex: /SourceSystemID/i } }
+                                                                 ]
+                                                             }
+                                                         }
+                                                     }
+                                                 }
+                                             }
+                                         }
+                                     }
+                                 },
+                                 {
+                                     $unwind:"$ruleGroups"
+                                 },
+                                 {
+                                     $unwind:"$ruleGroups.rules"
+                                 },
+                                 { $addFields:
+                                     {
+                                         tile: "Onboarding",
+                                         rulegroup: "$ruleGroups.ruleGroup",
+                                         rulegroupSequence: "$ruleGroups.sequence",
+                                         value: "$ruleGroups.rules.value",
+                                         attributeName: '$ruleGroups.rules.attributeName',
+                                         ruleSequence: "$ruleGroups.rules.sequence"
+                                     }
+                                 },
+                                 { $project: { 'ruleGroups': 0 } } ])
 
 
-db.EtlMetaData.aggregate([{ $match: { $text: { $search: 'concat' } } },
-                { $project: { _id: 0, feed: 1, ruleGroup: 1,
-                    ruleGroups: {
-                        $map: {
-                            input: '$rulegroups',
-                            as: 'rgp',
-                            in: {
-                                ruleGroup: '$$rgp.rulegroup',
-                                sequence: '$$rgp.sequence',
-                                rules: {
-                                    $filter: { input: '$$rgp.rules', as: 'rule', cond: { $regexMatch: { input: '$$rule.value', regex: /concat/ } } }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    $unwind:"$ruleGroups"
-                },
-                {
-                    $unwind:"$ruleGroups.rules"
-                },
-                { $addFields:
-                    {
-                        ruleGroup: "$ruleGroups.ruleGroup",
-                        rulegroupSequence: "$ruleGroups.sequence",
-                        value: "$ruleGroups.rules.value",
-                        attributeName: "$ruleGroups.rules.attributeName",
-                        ruleSequence: "$ruleGroups.rules.sequence"
-                    }
-                },
-                { $project: { "ruleGroups": 0 } }
-            ])
 
 
 

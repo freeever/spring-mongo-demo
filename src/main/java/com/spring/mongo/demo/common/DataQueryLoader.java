@@ -88,7 +88,7 @@ public class DataQueryLoader implements ApplicationRunner {
 
         if (params != null && params.length > 0) {
             for (int i = 0; i < params.length; i++) {
-                query = query.replace("{" + i + "}", params[i]);
+                query = query.replace("{" + i + "}", params[i].replaceAll("'", "\'"));
             }
         }
 

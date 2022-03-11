@@ -2,8 +2,7 @@
 <Queries>
     <Query id="rule.text.search">
         <![CDATA[
-            [{ $match: { $text: { $search: '{0}' } } },
-
+            [{ $match: { $text: { $search: '{0}', $caseSensitive: false } } },
                 { $project: { _id: 0, feed: 1, ruleGroup: 1,
                     ruleGroups: {
                         $map: {
@@ -13,30 +12,37 @@
                                 ruleGroup: '$$rgp.rulegroup',
                                 sequence: '$$rgp.sequence',
                                 rules: {
-                                    $filter: { input: '$$rgp.rules', as: 'rule', cond: { $regexMatch: { input: '$$rule.value', regex: /{0}/ } } }
+                                    $filter: { input: '$$rgp.rules', as: 'rule',
+                                        cond: {
+                                            $or: [
+                                                { $regexMatch: { input: '$$rule.value', regex: /{1}/i } },
+                                                { $regexMatch: { input: '$$rule.attributeName', regex: /{1}/i } }
+                                            ]
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                },
+                }
+            },
+            {
+                $unwind:"$ruleGroups"
+            },
+            {
+                $unwind:"$ruleGroups.rules"
+            },
+            { $addFields:
                 {
-                    $unwind:"$ruleGroups"
-                },
-                {
-                    $unwind:"$ruleGroups.rules"
-                },
-                { $addFields:
-                    {
-                        ruleGroup: "$ruleGroups.ruleGroup",
-                        rulegroupSequence: "$ruleGroups.sequence",
-                        value: "$ruleGroups.rules.value",
-                        attributeName: '$ruleGroups.rules.attributeName',
-                        ruleSequence: "$ruleGroups.rules.sequence"
-                    }
-                },
-                { $project: { 'ruleGroups': 0 } }
-            ], cursor: {}
+                    tile: "{2}",
+                    rulegroup: "$ruleGroups.ruleGroup",
+                    rulegroupSequence: "$ruleGroups.sequence",
+                    value: "$ruleGroups.rules.value",
+                    attributeName: '$ruleGroups.rules.attributeName',
+                    ruleSequence: "$ruleGroups.rules.sequence"
+                }
+            },
+            { $project: { 'ruleGroups': 0 } } ], cursor: {}
         ]]>
     </Query>
 
