@@ -38,3 +38,159 @@ db.course.insertMany ([
     ]
   }
 ])
+
+db.EtlMetaData.insertMany ([
+    {
+        "_id" : ObjectId("622101c085683a05d82856f2"),
+        "id" : "d834741c-e9cd-4fb0-9d25-c79da4ca7c4e",
+        "feed" : "Deriv_SWAP",
+        "rulegroups" : [
+            {
+                "id" : "6dd9c950-c395-4dfb-ae85-8f65be7ff4bb",
+                "rules" : [
+                    {
+                        "id" : "668664c6-c00a-47e8-8212-a722995f17b7",
+                        "sequence" : 10.0,
+                        "value" : "0001-0001",
+                        "attributeName" : "ApplicationCode",
+                        "type" : "expression",
+                        "description" : null,
+                        "outputfile" : false
+                    },
+                    {
+                        "id" : "668664c6-c00a-47e8-8212-a722995f17b8",
+                        "sequence" : 20.0,
+                        "value" : "0001-0002",
+                        "attributeName" : "ApplicationCode",
+                        "type" : "expression",
+                        "description" : null,
+                        "outputfile" : true
+                    },
+                    {
+                        "id" : "668664c6-c00a-47e8-8212-a722995f17b9",
+                        "sequence" : 30.0,
+                        "value" : "select * \n from ReportingView",
+                        "attributeName" : null,
+                        "type" : "query",
+                        "description" : null,
+                        "outputfile" : true
+                    }
+                ],
+                "rulegroup" : "RGP001-001",
+                "sequence" : 10.0
+            },
+            {
+                "id" : "10449bb4-295d-4d47-9a41-3fa7ae06c88d",
+                "rules" : [
+                    {
+                        "id" : "e0d3d47f-c63f-4bd3-b9c4-20490cabc29d",
+                        "sequence" : 10.0,
+                        "value" : "concat('0911111111111', PartyCode)",
+                        "attributeName" : "CustRelationshipNumber",
+                        "type" : "expression",
+                        "description" : null,
+                        "outputfile" : false
+                    },
+                    {
+                        "id" : "e0d3d47f-c63f-4bd3-b9c4-20490cabc29e",
+                        "sequence" : 20.0,
+                        "value" : "00001111111111111",
+                        "attributeName" : "ApplicationCode",
+                        "type" : "expression",
+                        "description" : null,
+                        "outputfile" : true
+                    },
+                    {
+                        "id" : "e0d3d47f-c63f-4bd3-b9c4-20490cabc29f",
+                        "sequence" : 30.0,
+                        "value" : "00002222222222222",
+                        "attributeName" : "ApplicationCode",
+                        "type" : "expression",
+                        "description" : null,
+                        "outputfile" : true
+                    }
+                ],
+                "rulegroup" : "RGP001-002",
+                "sequence" : 20.0
+            }
+        ],
+        "namespace" : "default"
+    },
+    {
+        "_id" : ObjectId("620c1293708ae8cd6ef3d582"),
+        "id" : "ef861b4d-ea75-4ab6-9c3e-2a5dc980cec5",
+        "feed" : "Deriv_SWAP",
+        "rulegroups" : [
+            {
+                "id" : "9e11ba57-5893-4a06-858d-c7eb7db6d068",
+                "rules" : [
+                    {
+                        "id" : "668664c6-c00a-47e8-8212-a722995f17b3",
+                        "sequence" : 10.0,
+                        "value" : "select \r\n   UniqueId\r\b\t, convert_date(AsOfDate) as AsOfDate",
+                        "attributeName" : "IssueTermMonths",
+                        "type" : "expression",
+                        "description" : null,
+                        "outputfile" : false
+                    },
+                    {
+                        "id" : "668664c6-c00a-47e8-8212-a722995f17b2",
+                        "sequence" : 20.0,
+                        "value" : "select \r\n   'CYO' as SourceSystemID\r\b\t, convert_date(AsOfDate) as AsOfDate",
+                        "attributeName" : "VariableFlag",
+                        "type" : "expression",
+                        "description" : null,
+                        "outputfile" : true
+                    },
+                    {
+                        "id" : "668664c6-c00a-47e8-8212-a722995f17b1",
+                        "sequence" : 30.0,
+                        "value" : "select \r\nconcat(if(isnull(eff_dt),",
+                        "attributeName" : "ExcludeFlag",
+                        "type" : "expression",
+                        "description" : null,
+                        "outputfile" : true
+                    }
+                ],
+                "rulegroup" : "RGP002-001",
+                "sequence" : 10.0
+            },
+            {
+                "id" : "9e11ba57-5893-4a06-858d-c7eb7db6d062",
+                "rules" : [
+                    {
+                        "id" : "668664c6-c00a-47e8-8212-a722995f17b4",
+                        "sequence" : 10.0,
+                        "value" : "concat('090000000000000', PartyCode)",
+                        "attributeName" : "CustRelationshipNumber",
+                        "type" : "expression",
+                        "description" : null,
+                        "outputfile" : false
+                    },
+                    {
+                        "id" : "668664c6-c00a-47e8-8212-a722995f17b5",
+                        "sequence" : 20.0,
+                        "value" : "00001",
+                        "attributeName" : "ApplicationCode",
+                        "type" : "expression",
+                        "description" : null,
+                        "outputfile" : true
+                    },
+                    {
+                        "id" : "668664c6-c00a-47e8-8212-a722995f17b6",
+                        "sequence" : 30.0,
+                        "value" : "concat(substring(SourceUniqueID,1,5)",
+                        "attributeName" : "CertificateCode",
+                        "type" : "expression",
+                        "description" : null,
+                        "outputfile" : true
+                    }
+                ],
+                "rulegroup" : "RGP002-002",
+                "sequence" : 20.0
+            }
+        ],
+        "namespace" : "default"
+    }
+]
+
