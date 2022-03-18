@@ -11,6 +11,14 @@ public class DocStoreException extends Exception {
     private String messageCode;
     private Object[] arguments;
 
+    public DocStoreException() {
+        super();
+    }
+
+    public DocStoreException(String message) {
+        super(message);
+    }
+
     public ErrorCategory getErrorCategory() {
         return errorCategory;
     }

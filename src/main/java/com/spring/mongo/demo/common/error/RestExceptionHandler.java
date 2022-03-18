@@ -1,5 +1,6 @@
 package com.spring.mongo.demo.common.error;
 
+import com.spring.mongo.demo.common.exception.DocStoreAuthenticationException;
 import com.spring.mongo.demo.common.exception.DocStoreDataAccessException;
 import com.spring.mongo.demo.common.exception.DocStoreException;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorInfo errorInfo = this.buildErrorInfo(HttpStatus.BAD_REQUEST.value(), ex);
         log.error(errorInfo.getMessage(), ex);
         ResponseEntity<ErrorInfo> responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(errorInfo);
+        return responseEntity;
+    }
+
+    @ExceptionHandler({ DocStoreAuthenticationException.class })
+    @ResponseBody
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<ErrorInfo> handleDocStoreAuthenticationException(DocStoreAuthenticationException ex) {
+        ErrorInfo errorInfo = this.buildErrorInfo(HttpStatus.UNAUTHORIZED.value(), ex);
+        log.error(errorInfo.getMessage(), ex);
+        ResponseEntity<ErrorInfo> responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(errorInfo);
         return responseEntity;
     }
