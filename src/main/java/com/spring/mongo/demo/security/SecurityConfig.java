@@ -23,15 +23,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         //Disabling session management
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        // Set permissions on endpoints
-        http.authorizeRequests()
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            // Set permissions on endpoints
+            .authorizeRequests()
                 .anyRequest()
-                .authenticated();
-
-        // Add JWT token filter
-        http.addFilterBefore(new JWTRequestFilter(new JwtUtil(), handlerExceptionResolver),
+                .authenticated().and()
+            .cors().and()
+            .csrf().disable()
+            // Add JWT token filter
+            .addFilterBefore(new JWTRequestFilter(new JwtUtil(), handlerExceptionResolver),
                 UsernamePasswordAuthenticationFilter.class);
     }
 }
