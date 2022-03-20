@@ -54,7 +54,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
                 return;
             }
 
-            UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(request, response, token);
+                UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(request, response, token);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
             chain.doFilter(request, response);
@@ -66,6 +66,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 //        } catch (AccessDeniedException ex) {
 //            this.resolveJwtException(request, response, "Invalid Token");
         } catch (Exception ex) {
+            log.error("Error during JWT Token validation", ex);
             this.resolveJwtException(request, response, "Access denied.");
         }
     }
