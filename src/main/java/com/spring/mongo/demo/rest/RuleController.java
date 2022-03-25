@@ -43,10 +43,10 @@ public class RuleController {
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseData<>(true, rules));
     }
 
-    @PostMapping("/create")
-    public int createRuleIndex() throws IOException {
+    @PostMapping("/export/elastic")
+    public int exportRuleToElasticsearch() throws IOException {
         log.info("RuleController.createRuleIndex");
-        return ruleService.createRuleIndex();
+        return ruleService.exportRuleToElasticsearch();
     }
 
     @PostMapping("/search")

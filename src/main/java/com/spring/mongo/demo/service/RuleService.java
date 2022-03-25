@@ -57,6 +57,7 @@ public class RuleService {
 
     private static final Map<String, String> ruleSearchCollectionMap = new HashMap<String, String>() {{
         put("EtlMetaData", "Onboarding");
+        put("EtlMetaData_Test", "Onboarding_Test");
     }};
 
     public List<Document> findRules(RuleSearchRequest request) {
@@ -80,10 +81,11 @@ public class RuleService {
     }
 
     /**
-     * Delete the existing rule index and create new index with all the rules
+     * Delete the existing rule index on Elasticsearch, create new index,
+     * and transform and export all the rules to the index
      * @return
      */
-    public int createRuleIndex() throws IOException {
+    public int exportRuleToElasticsearch() throws IOException {
         this.recreateRuleIndex();
         List<RuleDto> ruleDtoList = this.findAll();
         List<Rule> rules = ruleDtoList.stream()
