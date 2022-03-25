@@ -2,6 +2,8 @@ package com.spring.mongo.demo.security;
 
 import com.spring.mongo.demo.common.error.MessageCode;
 import com.spring.mongo.demo.common.exception.DocStoreAuthenticationException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -41,7 +43,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         try {
             if (StringUtils.isEmpty(header) || !header.startsWith(JwtUtil.TOKEN_PREFIX)) {
-                handlerExceptionResolver.resolveException(request, response, null, null);
+//                handlerExceptionResolver.resolveException(request, response, null, null);
                 chain.doFilter(request, response);
                 return;
             }
@@ -54,20 +56,17 @@ public class JWTRequestFilter extends OncePerRequestFilter {
                 return;
             }
 
-                UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(request, response, token);
+            UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(request, response, token);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
             chain.doFilter(request, response);
 
-//        } catch (SignatureException ex) {
-//            this.resolveJwtException(request, response, "Invalid JWT signature");
-//        } catch (ExpiredJwtException ex) {
-//            this.resolveJwtException(request, response, "JWT token expired.");
-//        } catch (AccessDeniedException ex) {
-//            this.resolveJwtException(request, response, "Invalid Token");
-        } catch (Exception ex) {
-            log.error("Error during JWT Token validation", ex);
-            this.resolveJwtException(request, response, "Access denied.");
+        } catch (SignatureException ex) {
+            this.resolveJwtException(request, response, "Invalid JWT signature");
+        } catch (ExpiredJwtException ex) {
+            this.resolveJwtException(request, response, "JWT token expired.");
+        } catch (AccessDeniedException ex) {
+            this.resolveJwtException(request, response, "Invalid Token");
         }
     }
 

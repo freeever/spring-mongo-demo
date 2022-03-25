@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
@@ -16,6 +17,7 @@ import javax.annotation.PostConstruct;
 import java.util.TimeZone;
 
 @Slf4j
+@PropertySource(value = "file:${CLIENT_CONFIG_PATH}/tbsm-data-docstore.properties")
 @SpringBootApplication
 @EnableMongoRepositories
 public class SpringMongoDemoApplication {

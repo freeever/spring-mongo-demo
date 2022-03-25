@@ -2,13 +2,15 @@
 <Queries>
     <Query id="rule.text.search">
         <![CDATA[
-            [{ $match: { $text: { $search: '{0}', $caseSensitive: false } } },
+            [
+                { $match: { $text: { $search: '{0}', $caseSensitive: false } } },
                 { $project: { _id: 0, feed: 1, ruleGroup: 1,
                     ruleGroups: {
                         $map: {
                             input: '$rulegroups',
                             as: 'rgp',
                             in: {
+                                id: '$$rgp.id',
                                 ruleGroup: '$$rgp.rulegroup',
                                 sequence: '$$rgp.sequence',
                                 rules: {
@@ -24,28 +26,64 @@
                             }
                         }
                     }
-                }
-            },
-            {
-                $unwind:"$ruleGroups"
-            },
-            {
-                $unwind:"$ruleGroups.rules"
-            },
-            { $addFields:
+                }},
                 {
-                    tile: "{2}",
-                    rulegroup: "$ruleGroups.ruleGroup",
-                    rulegroupSequence: "$ruleGroups.sequence",
-                    value: "$ruleGroups.rules.value",
-                    attributeName: '$ruleGroups.rules.attributeName',
-                    ruleSequence: "$ruleGroups.rules.sequence"
-                }
-            },
-            { $project: { 'ruleGroups': 0 } } ], cursor: {}
+                    $unwind:'$ruleGroups'
+                },
+                {
+                    $unwind:'$ruleGroups.rules'
+                },
+                { $addFields:
+                    {
+                        tile: '{2}',
+                        rulegroupId: '$ruleGroups.id',
+                        rulegroup: '$ruleGroups.ruleGroup',
+                        rulegroupSequence: '$ruleGroups.sequence',
+                        ruleId: '$ruleGroups.rules.id',
+                        value: '$ruleGroups.rules.value',
+                        attributeName: '$ruleGroups.rules.attributeName',
+                        ruleSequence: '$ruleGroups.rules.sequence'
+                    }
+                },
+                { $project: { 'ruleGroups': 0 } }
+            ], cursor: {}
         ]]>
     </Query>
 
-    <Query id="rule.text.search222222"><![CDATA[[{ $match: { $text: { $search: '{0}' } } },]]></Query>
+    <Query id="rule.search.all">
+        <![CDATA[
+            [
+                { $project: { _id: 0, feed: 1, ruleGroup: 1,
+                    ruleGroups: {
+                        $map: {
+                            input: '$rulegroups',
+                            as: 'rgp',
+                            in: {
+                                id: '$$rgp.id',
+                                ruleGroup: '$$rgp.rulegroup',
+                                sequence: '$$rgp.sequence',
+                                rules: '$$rgp.rules'
+                            }
+                        }
+                    }
+                }},
+                { $unwind: '$ruleGroups' },
+                { $unwind: '$ruleGroups.rules' },
+                { $addFields:
+                    {
+                        tile: '{0}',
+                        rulegroupId: '$ruleGroups.id',
+                        rulegroup: '$ruleGroups.ruleGroup',
+                        rulegroupSequence: '$ruleGroups.sequence',
+                        ruleId: '$ruleGroups.rules.id',
+                        value: '$ruleGroups.rules.value',
+                        attributeName: '$ruleGroups.rules.attributeName',
+                        ruleSequence: '$ruleGroups.rules.sequence'
+                    }
+                },
+                { $project: { 'ruleGroups': 0 } }
+            ], cursor: {}
+        ]]>
+    </Query>
 
 </Queries>

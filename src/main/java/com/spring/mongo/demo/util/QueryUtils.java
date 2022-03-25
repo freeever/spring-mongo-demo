@@ -19,14 +19,30 @@ public class QueryUtils {
             return null;
         }
 
-        List<String> words = Arrays.asList(StringUtils.split(term));
+        List<String> words = splitText(term);
+
+        return StringUtils.join(words, " ");
+    }
+
+    /**
+     * Pre-process the term used for a MongoDB full text search
+     * to prevent unexpected result
+     * @param text
+     * @return
+     */
+    public static List<String> splitText(String text) {
+        if (StringUtils.isBlank(text)) {
+            return null;
+        }
+
+        List<String> words = Arrays.asList(StringUtils.split(text));
         if (words.size() > 1) {
             words = words.stream()
                     .filter(v -> v.length() != 1)
                     .collect(Collectors.toList());
         }
 
-        return StringUtils.join(words, " ");
+        return words;
     }
 
     /**

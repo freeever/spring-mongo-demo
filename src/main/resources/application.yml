@@ -5,6 +5,7 @@ spring:
     mongodb:
       url: mongodb://localhost:27017/springdatamongo
       database: springdatamongo
+
 server:
   port: 8181
 
