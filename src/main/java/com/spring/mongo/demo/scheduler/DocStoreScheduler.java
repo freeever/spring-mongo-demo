@@ -17,7 +17,7 @@ public class DocStoreScheduler {
     private final RuleService ruleService;
 
     @Scheduled(
-            cron = "${elk.index.rule.cron:0 55 16 * * *}",
+            cron = "${elk.index.rule.cron:0 0 1 * * *}",
             zone = "${elk.index.rule.cron.zone:EST}"
     )
     public void exportRulesToElasticsearch() {
